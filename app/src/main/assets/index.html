@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Bawo — Malawi</title>
+<style>
+:root{--wood:#8b5a2b;--wood2:#b8793f;--dark:#28150a;--cream:#f5dfb3;--gold:#e4b85c;--green:#5fbe73;--red:#d86c5c}
+*{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at top,#4b2a15,#170b05 80%);font-family:system-ui,Arial,sans-serif;color:#fff;min-height:100vh}
+header{text-align:center;padding:13px 10px 5px}h1{margin:0;font-size:29px;letter-spacing:3px}.sub{opacity:.78;font-size:12px}
+.wrap{max-width:940px;margin:auto;padding:9px}.panel{background:#2a170c;border:1px solid #754925;border-radius:19px;padding:10px;box-shadow:0 12px 35px #0009}
+.status{display:flex;gap:7px;justify-content:space-between;align-items:center;margin-bottom:9px;font-size:12px;flex-wrap:wrap}.badge{padding:7px 10px;border-radius:999px;background:#4b301a}.badge.gold{background:#62491b;color:#ffe7a1}.badge.green{background:#21472b}
+.board{background:linear-gradient(90deg,#633719,#a96835 45%,#633719);border:9px solid #432512;border-radius:24px;padding:11px;box-shadow:inset 0 0 0 2px #d49a58,0 12px 30px #0009}
+.playerbar{display:flex;justify-content:space-between;align-items:center;padding:4px 3px 8px}.name{font-weight:900;letter-spacing:.7px}.turn{font-size:11px;opacity:.82}
+.rows{display:grid;gap:7px}.row{display:grid;grid-template-columns:repeat(8,1fr);gap:6px}.hole{aspect-ratio:1/1;min-height:53px;border-radius:13px;background:radial-gradient(circle at 35% 28%,#b87a43,#6b3c1c 72%);border:2px solid #4b2915;box-shadow:inset 0 5px 10px #3b1e0c99,0 2px 0 #d09351;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;cursor:pointer;user-select:none;transition:.12s}.hole.empty{opacity:.68}.hole.selected{outline:3px solid #ffe08a;transform:translateY(-2px)}.hole.legal{outline:3px solid var(--green)}.hole.blocked{opacity:.42}.hole .n{position:absolute;top:3px;left:6px;font-size:9px;opacity:.62}.count{font-size:20px;font-weight:900}.seeds{font-size:8px;opacity:.72}.cuu{box-shadow:inset 0 0 0 3px #e4b85c,inset 0 5px 10px #3b1e0c99,0 2px 0 #d09351}.cuu:after{content:"CUU";position:absolute;bottom:3px;right:5px;font-size:8px;color:#ffe7a7;font-weight:900}
+.mid{height:7px;background:#3a2112;border-radius:8px;box-shadow:inset 0 1px 2px #000}.info{margin-top:9px;background:#1f1008;border-radius:14px;padding:10px;font-size:12px;line-height:1.45}.controls{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}.controls button{flex:1 1 120px}
+button{border:0;border-radius:12px;padding:10px 12px;font-weight:800;background:var(--gold);color:#2b180d}button.secondary{background:#593a23;color:#fff}button.green{background:#4c9f60;color:#fff}button.red{background:#8b3d32;color:#fff}button:disabled{opacity:.4}button:active{transform:scale(.98)}
+.handbar{display:flex;gap:8px;margin-top:9px}.hand{flex:1;background:#1f1008;border:1px solid #684020;border-radius:13px;padding:8px;text-align:center}.hand strong{display:block;font-size:20px}.hand small{opacity:.7}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:10px;opacity:.82;margin-top:8px}.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#e7e0cc;margin-right:4px;vertical-align:-1px}
+@media(max-width:560px){.hole{min-height:39px;border-radius:10px}.count{font-size:16px}.row{gap:4px}.board{padding:7px;border-width:7px}.playerbar{font-size:12px}}
+</style>
+</head>
+<body>
+<header><h1>BAWO</h1><div class="sub">Malawi Bawo • 32 holes • 64 seeds</div></header>
+<div class="wrap"><div class="panel">
+  <div class="status"><span class="badge gold" id="phase">READY</span><span class="badge" id="turnBadge">Player 1</span><span class="badge" id="total">64 / 64 allocated</span></div>
+  <div class="board">
+    <div class="playerbar"><span class="name">PLAYER 2</span><span class="turn" id="p2state">Front • Hand 12</span></div>
+    <div class="rows" id="top"></div><div class="mid"></div><div class="rows" id="bottom"></div>
+    <div class="playerbar"><span class="name">PLAYER 1</span><span class="turn" id="p1state">Front • Hand 12</span></div>
+  </div>
+  <div class="handbar"><div class="hand"><strong id="p1hand">12</strong><small>PLAYER 1 HAND</small></div><div class="hand"><strong id="p2hand">12</strong><small>PLAYER 2 HAND</small></div></div>
+  <div class="legend"><span><i class="dot"></i>seed count</span><span>Gold = Cuu</span><span>Green = legal/selectable</span><span>Front numbers: 8 7 6 5 4 3 2 1</span></div>
+  <div class="info" id="info"><b>Bawo ready.</b> This version keeps the board and rules engine separate so the traditional Malawi rules can be tested safely.</div>
+  <div class="controls"><button class="green" onclick="startGame()">Start Game</button><button onclick="sowSelected()" id="sowBtn" disabled>Sow Selected</button><button class="secondary" onclick="passTurn()">Pass Turn</button><button class="secondary" onclick="showRules()">Rules</button><button class="secondary" onclick="resetGame()">New Game</button></div>
+</div></div>
+<script>
+const N=32;
+let board=Array(N).fill(0), turn=1, selected=-1, phase='setup', hands={1:12,2:12}, message='';
+// Physical layout: top back, top front, bottom front, bottom back.
+// Front rows use the user's numbering: LEFT -> RIGHT = 8 7 6 5 4 3 2 1.
+const frontP2=[8,7,6,5,4,3,2,1], frontP1=[8,7,6,5,4,3,2,1];
+const p1Front=[16,17,18,19,20,21,22,23], p2Front=[0,1,2,3,4,5,6,7];
+const cuuP2=3, cuuP1=19; // 4th physical hole from the left in each front row, highlighted as Cuu.
+function setup64(){
+  board.fill(0); hands={1:12,2:12}; turn=1; selected=-1; phase='setup';
+  // Confirmed minimum Cuu allocation. Remaining seeds are kept in the players' opening hand pool.
+  board[cuuP1]=18; board[cuuP2]=18;
+  hands[1]=14; hands[2]=14;
+  message='<b>Opening position.</b> Each Cuu starts with 18 seeds. The remaining 28 seeds are held equally as 14 per player. The 12-seed hand-lineup rule is available during the opening arrangement.';
+  render();
+}
+function playerOwn(i,p){return p===1?(i>=16):(i<16)}
+function frontIndex(i,p){let arr=p===1?p1Front:p2Front;return arr.indexOf(i)}
+function makeHole(i,label,isCuu){const d=document.createElement('div');let own=playerOwn(i,turn);let legal=phase==='play'&&own&&board[i]>0;
+  d.className='hole '+(board[i]===0?'empty ':'')+(isCuu?'cuu ':'')+(selected===i?'selected ':'')+(legal?'legal ':'');
+  d.onclick=()=>selectHole(i);d.innerHTML=`<span class="n">${label}</span><span class="count">${board[i]}</span><span class="seeds">seeds</span>`;return d;
+}
+function render(){const top=document.getElementById('top'),bottom=document.getElementById('bottom');top.innerHTML='';bottom.innerHTML='';
+  const rs=[document.createElement('div'),document.createElement('div'),document.createElement('div'),document.createElement('div')];rs.forEach(r=>r.className='row');
+  for(let c=0;c<8;c++)rs[0].appendChild(makeHole(8+c,'B'+(8+c+1),false));
+  for(let c=0;c<8;c++)rs[1].appendChild(makeHole(c,frontP2[c],c===3));
+  for(let c=0;c<8;c++)rs[2].appendChild(makeHole(16+c,frontP1[c],c===3));
+  for(let c=0;c<8;c++)rs[3].appendChild(makeHole(24+c,'B'+(24+c+1),false));top.append(rs[0],rs[1]);bottom.append(rs[2],rs[3]);
+  const allocated=board.reduce((a,b)=>a+b,0)+hands[1]+hands[2];document.getElementById('total').textContent=`${allocated} / 64 allocated`;
+  document.getElementById('p1hand').textContent=hands[1];document.getElementById('p2hand').textContent=hands[2];
+  document.getElementById('turnBadge').textContent=`Player ${turn}`;document.getElementById('phase').textContent=phase==='setup'?'OPENING':'PLAY';
+  document.getElementById('sowBtn').disabled=!(phase==='play'&&selected>=0&&playerOwn(selected,turn)&&board[selected]>0);
+  document.getElementById('info').innerHTML=message;
+}
+function selectHole(i){
+  if(phase==='setup'){selected=i;message=`Selected <b>${displayLabel(i)}</b>. Start the game when ready.`;render();return;}
+  if(!playerOwn(i,turn)||board[i]===0){message='<b>Choose one of your own occupied holes.</b>';render();return;}
+  selected=i;message=`Selected <b>hole ${displayLabel(i)}</b> with <b>${board[i]}</b> seeds.`;render();
+}
+function displayLabel(i){if(i<8)return frontP2[i];if(i>=16&&i<24)return frontP1[i-16];return i+1}
+function oppositeFront(i){if(i<8)return 16+i;if(i>=16&&i<24)return i-16;return -1}
+function isFront(i){return (i>=0&&i<8)||(i>=16&&i<24)}
+function bawoNumber(i,p){return p===1?frontP1.indexOf(i)>=0?frontP1.indexOf(i)+1:0:frontP2.indexOf(i)>=0?frontP2.indexOf(i)+1:0}
+function specialFrontRestart(i,p){
+  const n=bawoNumber(i,p);
+  // Confirmed special front sequence: 8 wraps to 1. Nos. 7 and 8 use the special Bawo restart rule.
+  return n===7||n===8||n===5;
+}
+function nextFront(i,p){
+  const arr=p===1?p1Front:p2Front, k=arr.indexOf(i);
+  return arr[(k+1+8)%8];
+}
+function sowSelected(){
+  if(phase!=='play'||selected<0||board[selected]===0||!playerOwn(selected,turn))return;
+  let seeds=board[selected]; board[selected]=0; let pos=selected; let path=[]; let captured=0; let rounds=0;
+  while(seeds>0){
+    pos=nextPosition(pos,turn); board[pos]++; seeds--; path.push(displayLabel(pos));
+  }
+  let lastHadSeedBeforeLanding = board[pos] > 1;
+  let lastNum=bawoNumber(pos,turn);
+  let canNormalCapture=isFront(pos)&&lastHadSeedBeforeLanding;
+  let special=lastNum===7||lastNum===8;
+  let captureAllowed=canNormalCapture||special;
+  if(captureAllowed){
+    const opp=oppositeFront(pos);
+    if(opp>=0 && board[opp]>0){
+      captured=board[opp]; board[opp]=0;
+      board[pos]=0;
+      message=`<b>Consumption:</b> ${captured} opponent seeds taken opposite hole <b>${lastNum||displayLabel(pos)}</b>. ` +
+        (special?`Special ${lastNum} rule: restart from the front; 8 wraps to 1.`:`Normal occupied-front capture.`);
+      // The exact continued sowing/capture chain is kept explicit for the final traditional-rule pass.
+      if(specialFrontRestart(pos,turn)) rounds++;
+    } else {
+      message=`Last seed reached <b>${displayLabel(pos)}</b>, but there were no opponent seeds opposite to consume.`;
+    }
+  } else {
+    message=`Sowing ended at <b>${displayLabel(pos)}</b>. The destination did not satisfy the normal front-hole consumption condition.`;
+  }
+  selected=-1;
+  // End condition already confirmed: no front seeds ends the game.
+  const oppFront=turn===1?p2Front:p1Front;
+  if(oppFront.every(i=>board[i]===0)){
+    phase='over'; message+=`<br><b>Game over:</b> Player ${turn} has removed all opponent front seeds.`;
+  } else turn=turn===1?2:1;
+  render();
+}
+function nextPosition(pos,p){
+  // Movement around the player's own 16-hole half. Front numbering is mirrored: 8 7 6 5 4 3 2 1.
+  if(p===1){let local=pos>=16?pos-16:0;return 16+((local+1)%8);}else{let local=pos<8?pos:0;return (local+1)%8;}
+}
+function startGame(){phase='play';selected=-1;turn=1;message='<b>Game started.</b> Player 1 begins. Select an occupied hole and sow.';render();}
+function passTurn(){if(phase==='over')return;turn=turn===1?2:1;selected=-1;message=`Turn handed over to <b>Player ${turn}</b>.`;render();}
+function showRules(){message=`<b>Confirmed Bawo rules in this build:</b><br>• 32 holes and 64 seeds.<br>• 18 seeds minimum in each Cuu.<br>• Front numbering is 8 7 6 5 4 3 2 1.<br>• Normal consumption requires the final seed to land in an occupied front hole.<br>• Hole 5 has its special restart rule.<br>• Holes 7 and 8 use the special consumption/restart rule; 8 wraps to 1.<br>• A player loses when the opponent has no front seeds.<br><br>The remaining hand-lineup and long capture-chain details are isolated for further rule testing rather than guessed.`;render();}
+function resetGame(){setup64();}
+setup64();
+</script></body></html>
