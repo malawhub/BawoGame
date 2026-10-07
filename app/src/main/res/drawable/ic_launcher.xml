@@ -4,45 +4,101 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Wooden Bawo board -->
+    <!-- Deep shadow -->
     <path
-        android:fillColor="#6B3E1E"
-        android:pathData="M7,18 L101,18 L101,90 L7,90 Z" />
+        android:fillColor="#1A0B05"
+        android:pathData="M5,20 L103,20 L103,92 L5,92 Z" />
 
+    <!-- Solid wooden board -->
     <path
-        android:fillColor="#9A5C2C"
-        android:pathData="M12,23 L96,23 L96,85 L12,85 Z" />
+        android:fillColor="#4A2410"
+        android:pathData="M7,17 L101,17 L101,89 L7,89 Z" />
+
+    <!-- Inner wood surface -->
+    <path
+        android:fillColor="#8B4E25"
+        android:pathData="M11,21 L97,21 L97,85 L11,85 Z" />
+
+    <!-- Wood highlight -->
+    <path
+        android:fillColor="#A86636"
+        android:pathData="M13,23 L95,23 L95,27 L13,27 Z" />
 
     <!-- Recessed holes -->
-    <path android:fillColor="#2B160C"
-        android:pathData="M16,31 A7,7 0,1 0,30,31 A7,7 0,1 0,16,31" />
-    <path android:fillColor="#2B160C"
-        android:pathData="M38,31 A7,7 0,1 0,52,31 A7,7 0,1 0,38,31" />
-    <path android:fillColor="#2B160C"
-        android:pathData="M60,31 A7,7 0,1 0,74,31 A7,7 0,1 0,60,31" />
-    <path android:fillColor="#2B160C"
-        android:pathData="M82,31 A7,7 0,1 0,96,31 A7,7 0,1 0,82,31" />
+    <path
+        android:fillColor="#241108"
+        android:pathData="M15,31 A7,7 0,1 0,29,31 A7,7 0,1 0,15,31" />
+    <path
+        android:fillColor="#241108"
+        android:pathData="M37,31 A7,7 0,1 0,51,31 A7,7 0,1 0,37,31" />
+    <path
+        android:fillColor="#241108"
+        android:pathData="M59,31 A7,7 0,1 0,73,31 A7,7 0,1 0,59,31" />
+    <path
+        android:fillColor="#241108"
+        android:pathData="M81,31 A7,7 0,1 0,95,31 A7,7 0,1 0,81,31" />
 
-    <path android:fillColor="#2B160C"
-        android:pathData="M16,62 A7,7 0,1 0,30,62 A7,7 0,1 0,16,62" />
-    <path android:fillColor="#2B160C"
-        android:pathData="M38,62 A7,7 0,1 0,52,62 A7,7 0,1 0,38,62" />
-    <path android:fillColor="#2B160C"
-        android:pathData="M60,62 A7,7 0,1 0,74,62 A7,7 0,1 0,60,62" />
-    <path android:fillColor="#2B160C"
-        android:pathData="M82,62 A7,7 0,1 0,96,62 A7,7 0,1 0,82,62" />
+    <path
+        android:fillColor="#241108"
+        android:pathData="M15,63 A7,7 0,1 0,29,63 A7,7 0,1 0,15,63" />
+    <path
+        android:fillColor="#241108"
+        android:pathData="M37,63 A7,7 0,1 0,51,63 A7,7 0,1 0,37,63" />
+    <path
+        android:fillColor="#241108"
+        android:pathData="M59,63 A7,7 0,1 0,73,63 A7,7 0,1 0,59,63" />
+    <path
+        android:fillColor="#241108"
+        android:pathData="M81,63 A7,7 0,1 0,95,63 A7,7 0,1 0,81,63" />
 
-    <!-- Bawo seeds -->
-    <path android:fillColor="#D9A441"
-        android:pathData="M19,28 A4,4 0,1 0,27,28 A4,4 0,1 0,19,28" />
+    <!-- Individual glossy marbles: dark base -->
+    <path
+        android:fillColor="#54270F"
+        android:pathData="M18,27 A5,5 0,1 0,28,27 A5,5 0,1 0,18,27" />
+    <path
+        android:fillColor="#6E3215"
+        android:pathData="M40,27 A5,5 0,1 0,50,27 A5,5 0,1 0,40,27" />
+    <path
+        android:fillColor="#54270F"
+        android:pathData="M62,59 A5,5 0,1 0,72,59 A5,5 0,1 0,62,59" />
+    <path
+        android:fillColor="#6E3215"
+        android:pathData="M84,59 A5,5 0,1 0,94,59 A5,5 0,1 0,84,59" />
 
-    <path android:fillColor="#B85C25"
-        android:pathData="M41,28 A4,4 0,1 0,49,28 A4,4 0,1 0,41,28" />
+    <!-- Marble surfaces -->
+    <path
+        android:fillColor="#C77B2E"
+        android:pathData="M19,26 A4,4 0,1 0,27,26 A4,4 0,1 0,19,26" />
+    <path
+        android:fillColor="#D8953E"
+        android:pathData="M41,26 A4,4 0,1 0,49,26 A4,4 0,1 0,41,26" />
+    <path
+        android:fillColor="#C77B2E"
+        android:pathData="M63,58 A4,4 0,1 0,71,58 A4,4 0,1 0,63,58" />
+    <path
+        android:fillColor="#D8953E"
+        android:pathData="M85,58 A4,4 0,1 0,93,58 A4,4 0,1 0,85,58" />
 
-    <path android:fillColor="#D9A441"
-        android:pathData="M63,59 A4,4 0,1 0,71,59 A4,4 0,1 0,63,59" />
+    <!-- Marble highlights -->
+    <path
+        android:fillColor="#FFE2A1"
+        android:pathData="M20,24 A1.6,1.6 0,1 0,23.2,24 A1.6,1.6 0,1 0,20,24" />
+    <path
+        android:fillColor="#FFE2A1"
+        android:pathData="M42,24 A1.6,1.6 0,1 0,45.2,24 A1.6,1.6 0,1 0,42,24" />
+    <path
+        android:fillColor="#FFE2A1"
+        android:pathData="M64,56 A1.6,1.6 0,1 0,67.2,56 A1.6,1.6 0,1 0,64,56" />
+    <path
+        android:fillColor="#FFE2A1"
+        android:pathData="M86,56 A1.6,1.6 0,1 0,89.2,56 A1.6,1.6 0,1 0,86,56" />
 
-    <path android:fillColor="#B85C25"
-        android:pathData="M85,59 A4,4 0,1 0,93,59 A4,4 0,1 0,85,59" />
+    <!-- Small wood grain details -->
+    <path
+        android:fillColor="#6A3519"
+        android:pathData="M16,77 L40,77 L40,79 L16,79 Z" />
+    <path
+        android:fillColor="#6A3519"
+        android:pathData="M67,77 L91,77 L91,79 L67,79 Z" />
 
 </vector>
