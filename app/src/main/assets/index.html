@@ -564,8 +564,9 @@ Setup: Cuu starts at 8 for each side. Each player then places 5 lineup seeds one
 16 holes (front, back, or more into the Cuu) — tap to place during setup. Hand is fixed at 19 per side afterward
 (32 − 8 − 5 − more-if-added-to-cuu-cancels-out = 19 either way). Remaining assumption: back-row ring positions
 9-16 map directly to back holes 1-8 (not mirrored) continuing the front row's direction — flag if that's wrong.
-Cuu depletion moves (the "cuu > 8" / "cuu == 8" special plays once the front row empties) aren't implemented yet
-— that's next once this core loop and setup check out.
+Cuu/Cuue is front hole 4 and is treated as a normal front hole for consumption.
+The game ends when the front holes are empty, or when the hand is exhausted and
+there is at most 1 marble total across all 16 holes.
 </div>
 
 <script>
@@ -709,20 +710,45 @@ function doMove(side, zone, hole, dir, fromHand){
   checkEndAndSwitch();
 }
 
-function frontEmpty(side){ for(let h=1;h<=8;h++) if(S[side].front[h]>0) return false; return true; }
-function allSingles(side){
-  for(let h=1;h<=8;h++){ if(S[side].front[h]>1) return false; if(S[side].back[h]>1) return false; }
+function frontEmpty(side){
+  for(let h=1;h<=8;h++){
+    if(S[side].front[h]>0) return false;
+  }
   return true;
+}
+
+function totalHoleMarbles(side){
+  let total=0;
+  for(let h=1;h<=8;h++){
+    total += S[side].front[h];
+    total += S[side].back[h];
+  }
+  return total;
 }
 
 function checkEndAndSwitch(){
   const other = opp(current);
+
+  // Bawo rule: no marbles in the front holes ends the game,
+  // even when the player still has hand marbles.
   if(frontEmpty(current)){
-    gameOver=true; logMsg(`<b>Player ${other} wins</b> — ${current}'s front row is empty.`); render(); return;
+    gameOver=true;
+    logMsg(`<b>Player ${other} wins</b> — ${current}'s front holes are empty.`);
+    render();
+    return;
   }
-  if(allSingles(current)){
-    gameOver=true; logMsg(`<b>Player ${other} wins</b> — ${current} has at most 1 seed in every hole.`); render(); return;
+
+  // Bawo rule: after the hand is exhausted, one or fewer
+  // marbles remaining across ALL 16 holes ends the game.
+  if(S[current].hand===0 && totalHoleMarbles(current)<=1){
+    gameOver=true;
+    logMsg(`<b>Player ${other} wins</b> — ${current} has at most 1 marble remaining in all holes and no hand marbles.`);
+    render();
+    return;
   }
+
+  // Having one or fewer marbles in the front alone does NOT
+  // end the game if the back still contains more than one.
   current = other;
   render();
 }
